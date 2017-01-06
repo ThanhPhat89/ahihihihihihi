@@ -12,6 +12,7 @@
 	var latitude = 10;
 	var longitude = 106;
 	var marker;
+	var current_point = null;
 
 	function geoFindMe() {
 		function success(position) {
@@ -23,8 +24,10 @@
 			var currLocation = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
 
 	         // plot the currLocation on Google Maps, or handle accordingly:
-
-	         new google.maps.Marker({ title: 'Current Location',
+             if (current_point != null) {
+            	 current_point.setMap(null);
+                 }
+	         current_point = new google.maps.Marker({ title: 'Current Location',
 	                                  map: map, 
 	                                  position: currLocation });
 
@@ -61,18 +64,20 @@
 </script>
 <style>
 body, html {
-  height: 100%;
-  width: 100%;
+  height: 98%;
+  width: 98%;
 }
 
 div#map-canvas {
-  width: 99%; height: 80%;
+  width: 100%; height: 80%;margin-left: 2%;
 }
 </style>
 </head>
 <body>
+ <div id="header">
+    <P>  The time on the server is ${serverTime}. </P>
+    <input type="button" value="current" onclick="geoFindMe();">
+ </div>
  <div id="map-canvas"></div>
- <P>  The time on the server is ${serverTime}. </P>
- <div id="out"></div>
 </body>
 </html>
