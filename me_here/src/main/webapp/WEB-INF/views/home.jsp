@@ -1,14 +1,78 @@
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ page session="false" %>
+<%@ page language="java" contentType="text/html; charset=EUC-KR"
+    pageEncoding="EUC-KR"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-	<title>Home</title>
+<meta http-equiv="Content-Type" content="text/html; charset=EUC-KR">
+<title>Insert title here</title>
+<script
+    src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&key=AIzaSyD_nkcEFMlfk6QehiK-jFKem1We2v2YoO0"></script>
+<script>
+	var map; //<-- This is now available to both event listeners and the initialize() function
+	var latitude = 10;
+	var longitude = 106;
+	var marker;
+
+	function geoFindMe() {
+		function success(position) {
+			latitude = position.coords.latitude;
+			longitude = position.coords.longitude;
+			console.log(latitude);
+			console.log(longitude);
+
+			var currLocation = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
+
+	         // plot the currLocation on Google Maps, or handle accordingly:
+
+	         new google.maps.Marker({ title: 'Current Location',
+	                                  map: map, 
+	                                  position: currLocation });
+
+	         map.setCenter(currLocation);
+		}
+
+		function error() {
+			console.log("Unable to retrieve your location");
+		}
+
+		if (navigator.geolocation) {
+		    navigator.geolocation.getCurrentPosition(success, error);
+		}
+	}
+
+	function initialize() {
+		var myLatlng = new google.maps.LatLng(10, 106);
+		geoFindMe();
+		var mapOptions = {
+			center : myLatlng,
+			zoom : 20,
+			mapTypeId : google.maps.MapTypeId.ROADMAP
+		};
+		map = new google.maps.Map(document.getElementById("map-canvas"),
+				mapOptions);
+	}
+
+	google.maps.event.addDomListener(window, 'load', initialize);
+	google.maps.event.addDomListener(window, "resize", function() {
+		var center = map.getCenter();
+		google.maps.event.trigger(map, "resize");
+		map.setCenter(center);
+	});
+</script>
+<style>
+body, html {
+  height: 100%;
+  width: 100%;
+}
+
+div#map-canvas {
+  width: 99%; height: 80%;
+}
+</style>
 </head>
 <body>
-<h1>
-	Hello world!  
-</h1>
-
-<P>  The time on the server is ${serverTime}. </P>
+ <div id="map-canvas"></div>
+ <P>  The time on the server is ${serverTime}. </P>
+ <div id="out"></div>
 </body>
 </html>
